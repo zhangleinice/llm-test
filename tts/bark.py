@@ -1,8 +1,55 @@
-# Use a pipeline as a high-level helper
-from transformers import pipeline
 
-pipe = pipeline("text-to-speech", model="suno/bark")
+from transformers import AutoProcessor, AutoModel
+import scipy
 
-result = pipe("君不见黄河之水天上来，奔流到海不复回。君不见高堂明镜悲白发，朝如青丝暮成雪。人生得意须尽欢，莫使金樽空对月。天生我材必有用，千金散尽还复来。烹羊宰牛且为乐，会须一饮三百杯。岑夫子，丹丘生，将进酒，杯莫停。与君歌一曲，请君为我倾耳听。钟鼓馔玉不足贵，但愿长醉不愿醒。古来圣贤皆寂寞，惟有饮者留其名。陈王昔时宴平乐，斗酒十千恣欢谑。主人何为言少钱，径须沽取对君酌。五花马、千金裘，呼儿将出换美酒，与尔同销万古愁。")
+processor = AutoProcessor.from_pretrained("suno/bark-small")
+model = AutoModel.from_pretrained("suno/bark-small")
 
-print(result)
+# inputs = processor(
+#     text=["Hello, my name is Suno. And, uh — and I like pizza. [laughs] But I also have other interests such as playing tic tac toe."],
+#     return_tensors="pt",
+# )
+
+inputs = processor(
+    text=["床前明月光，疑是地上霜。举头望明月，低头思故乡。"],
+    return_tensors="pt",
+)
+
+speech_values = model.generate(**inputs, do_sample=True)
+
+print(speech_values)
+
+sampling_rate = model.generation_config.sample_rate
+scipy.io.wavfile.write("bark_out.wav", rate=sampling_rate,
+                       data=speech_values.cpu().numpy().squeeze())
+
+
+# # Use a pipeline as a high-level helper
+# from transformers import pipeline
+# import numpy as np
+# from scipy.io.wavfile import write
+
+# pipe = pipeline("text-to-speech", model="suno/bark-small", device=0)
+
+# result = pipe("Hello, my name is Suno. And, uh — and I like pizza. [laughs]But I also have other interests such as playing tic tac toe.")
+
+# print(result)
+
+# # 保存错误
+# # 语音数据数组
+# audio_data = result['audio']
+
+# # 采样率
+# sampling_rate = result['sampling_rate']
+
+# # 指定保存的文件名和路径
+# output_file = 'generated_audio.wav'
+
+# # 将音频数据的振幅缩放到[-1, 1]之间
+# audio_data = audio_data / np.max(np.abs(audio_data))
+
+# # 缩放音频数据，确保适合16位整数格式，同时限制振幅在[-1, 1]之间
+# scaled_audio = (audio_data * 0.8 * 32767.0).astype(np.int16)
+
+# # 将语音数据保存为.wav文件
+# write(output_file, sampling_rate, scaled_audio)

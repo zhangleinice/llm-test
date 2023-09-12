@@ -1,2 +1,3 @@
 langchain==0.0.3
 transformers
+torchvision==0.15.2

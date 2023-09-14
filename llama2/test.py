@@ -25,12 +25,12 @@ prompt = "今天你吃了吗，用中文回答我"
 
 input = tokenizer(prompt, return_tensors="pt")
 
-print('input', input)
-
 res = model.generate(input_ids=input.input_ids, max_length=30)
 
 # 将生成的输出转换为文本
 generated_text = tokenizer.decode(res[0], skip_special_tokens=True)
+
+print('input', input)
 
 print('res', res)
 

@@ -19,7 +19,7 @@ from langchain.chains import RetrievalQA
 llm = OpenAI(temperature=0)
 
 # 问答llmchain
-loader = TextLoader('../data/faq/ecommerce_faq.txt')
+loader = TextLoader('./faq/ecommerce_faq.txt')
 
 documents = loader.load()
 
@@ -41,7 +41,7 @@ faq_chain = VectorDBQA.from_chain_type(
 
 #  商品推荐 llMchain
 
-product_loader = CSVLoader('../data/faq/ecommerce_products.csv')
+product_loader = CSVLoader('./faq/ecommerce_products.csv')
 product_documents = product_loader.load()
 product_text_splitter = CharacterTextSplitter(chunk_size=1024, separator="\n")
 product_texts = product_text_splitter.split_documents(product_documents)

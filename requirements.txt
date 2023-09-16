@@ -3,3 +3,4 @@ langchain
 torch
 torchvision
 transformers
+accelerate

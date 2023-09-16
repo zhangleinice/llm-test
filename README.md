@@ -21,4 +21,7 @@ pip install -r requirements.txt
 # prepare your private OpenAI key (for Linux)
 export OPENAI_API_KEY={Your_Private_Openai_Key}
 
+# huggingface-cli login
+huggingface-cli login --token {Your_Huggingface_Token}
+
 ```
